@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nisiwa.project3.mapper.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.nisiwa.project3.bean.Message">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="from_id" jdbcType="INTEGER" property="fromId" />
+    <result column="to_id" jdbcType="INTEGER" property="toId" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="has_read" jdbcType="INTEGER" property="hasRead" />
+    <result column="conversation_id" jdbcType="VARCHAR" property="conversationId" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pj3message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nisiwa.project3.bean.Message">
+    insert into pj3message (id, from_id, to_id, 
+      created_date, has_read, conversation_id, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{fromId,jdbcType=INTEGER}, #{toId,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{hasRead,jdbcType=INTEGER}, #{conversationId,jdbcType=VARCHAR}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nisiwa.project3.bean.Message">
+    update pj3message
+    set from_id = #{fromId,jdbcType=INTEGER},
+      to_id = #{toId,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      has_read = #{hasRead,jdbcType=INTEGER},
+      conversation_id = #{conversationId,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, from_id, to_id, created_date, has_read, conversation_id, content
+    from pj3message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, from_id, to_id, created_date, has_read, conversation_id, content
+    from pj3message
+  </select>
+
+  <select id="selectByConversationId" resultMap="BaseResultMap">
+    select id, from_id, to_id, created_date, has_read, conversation_id, content
+    from pj3message
+    WHERE conversation_id=#{conversationId}
+    ORDER by created_date DESC
+  </select>
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nisiwa.project3.mapper.NewsMapper">
+  <resultMap id="BaseResultMap" type="com.nisiwa.project3.VO.VO">
+    <!--<association property="like" javaType="int" column="like_count"/>-->
+    <association property="user" javaType="com.nisiwa.project3.bean.User" column="uid">
+      <id column="uid" jdbcType="INTEGER" property="id" />
+      <result column="name" jdbcType="VARCHAR" property="name" />
+      <result column="password" jdbcType="VARCHAR" property="password" />
+      <result column="salt" jdbcType="VARCHAR" property="salt" />
+      <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+    </association>
+    <association property="news" javaType="com.nisiwa.project3.bean.News" column="user_id">
+      <id column="nid" jdbcType="INTEGER" property="id" />
+      <result column="title" jdbcType="VARCHAR" property="title" />
+      <result column="link" jdbcType="VARCHAR" property="link" />
+      <result column="image" jdbcType="VARCHAR" property="image" />
+      <result column="like_count" jdbcType="INTEGER" property="likeCount" />
+      <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+      <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+      <result column="user_id" jdbcType="INTEGER" property="userId" />
+    </association>
+  </resultMap>
+
+  <resultMap id="NewsResultMap" type="com.nisiwa.project3.bean.News">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="link" jdbcType="VARCHAR" property="link" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="like_count" jdbcType="INTEGER" property="likeCount" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select u.id as uid, u.name, u.password, u.salt, u.head_url,
+    n.id as nid, n.title, n.link, n.image, n.like_count, n.comment_count,n.created_date, n.user_id
+      from pj3user u LEFT JOIN pj3news n on u.id = n.user_id where n.id != '' ORDER BY created_date DESC
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pj3news
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nisiwa.project3.bean.News">
+    insert into pj3news (id, title, link, 
+      image, like_count, comment_count, 
+      created_date, user_id)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{link,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR}, #{likeCount,jdbcType=INTEGER}, #{commentCount,jdbcType=INTEGER}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nisiwa.project3.bean.News">
+    update pj3news
+    set title = #{title,jdbcType=VARCHAR},
+      link = #{link,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      like_count = #{likeCount,jdbcType=INTEGER},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateNewsCommentCountById" parameterType="com.nisiwa.project3.bean.News">
+    update pj3news
+    set comment_count = comment_count + 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateNewsLikeCountById" parameterType="com.nisiwa.project3.bean.News">
+    update pj3news
+    set like_count = #{count}
+    where id = #{newsId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="NewsResultMap">
+    select id, title, link, image, like_count, comment_count, created_date, user_id
+    from pj3news
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectAllNews" resultMap="NewsResultMap">
+    select id, title, link, image, like_count, comment_count, created_date, user_id
+    from pj3news
+  </select>
+
+</mapper>

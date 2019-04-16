@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nisiwa.project3.mapper.ConversationMapper">
+  <resultMap id="BaseResultMap" type="com.nisiwa.project3.bean.Conversation">
+    <id column="conversation_id" jdbcType="VARCHAR" property="conversationId" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="msg_num" jdbcType="INTEGER" property="msgNum" />
+    <result column="from_id" jdbcType="INTEGER" property="fromId" />
+    <result column="to_id" jdbcType="INTEGER" property="toId" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pj3conversation
+    where conversation_id = #{conversationId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nisiwa.project3.bean.Conversation">
+    insert into pj3conversation (conversation_id, created_date, msg_num, 
+      from_id, to_id, content
+      )
+    values (#{conversationId,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{msgNum,jdbcType=INTEGER}, 
+      #{fromId,jdbcType=INTEGER}, #{toId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.nisiwa.project3.bean.Conversation">
+    update pj3conversation
+    set created_date = #{createdDate,jdbcType=TIMESTAMP},
+      msg_num = #{msgNum,jdbcType=INTEGER},
+      from_id = #{fromId,jdbcType=INTEGER},
+      to_id = #{toId,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR}
+    where conversation_id = #{conversationId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select conversation_id, created_date, msg_num, from_id, to_id, content
+    from pj3conversation
+    where conversation_id = #{conversationId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select conversation_id, created_date, msg_num, from_id, to_id, content
+    from pj3conversation
+  </select>
+
+  <select id="selectAllConversationByUserId" resultMap="BaseResultMap">
+    select conversation_id, created_date, msg_num, from_id, to_id, content
+    from pj3conversation
+    WHERE from_id = #{id} or to_id=#{id}
+  </select>
+</mapper>
